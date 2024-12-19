@@ -5,35 +5,40 @@ import java.util.Scanner;
 
 public class HowOldIsMe {
 
-    public static String CalculateAge(int day, int month, int year) {
-        LocalDateTime dateTime = getDateTime();
-        int currentDay = dateTime.getDayOfMonth();
-        int currentMonth = dateTime.getMonthValue();
-        int currentYear = dateTime.getYear();
-        String yearDifference = String.valueOf(currentYear - year);
-        String monthDifference = String.valueOf(currentMonth - month);
-        String dateDifference = String.valueOf(currentDay - day);
+    public static String calculateAge(int day, int month, int year) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        int currentDay = currentDateTime.getDayOfMonth();
+        int currentMonth = currentDateTime.getMonthValue();
+        int currentYear = currentDateTime.getYear();
 
-        return "You are is: " + yearDifference + ", " + monthDifference + ", " + dateDifference;
-    }
+        int ageYears = currentYear - year;
+        int ageMonths = currentMonth - month;
+        int ageDays = currentDay - day;
 
-    public static LocalDateTime getDateTime() {
-        return LocalDateTime.now();
+        if (ageDays < 0) {
+            ageMonths--;
+            ageDays += currentDateTime.minusMonths(1).getMonth().length(currentDateTime.toLocalDate().isLeapYear());
+        }
+
+        if (ageMonths < 0) {
+            ageYears--;
+            ageMonths += 12;
+        }
+
+        return "You are: " + ageYears + " years, " + ageMonths + " months, and " + ageDays + " days old.";
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter your date of birth:");
-        int dateOfBirth = scanner.nextInt();
-        System.out.print("month:");
-        int monthString = scanner.nextInt();
-        System.out.print("year:");
-        int yearString = scanner.nextInt();
+        System.out.print("Enter your date of birth (day): ");
+        int day = scanner.nextInt();
+        System.out.print("Enter your month of birth (month): ");
+        int month = scanner.nextInt();
+        System.out.print("Enter your year of birth (year): ");
+        int year = scanner.nextInt();
         scanner.close();
-        System.out.print("You were born: " + dateOfBirth);
-        System.out.print(", " + monthString);
-        System.out.print(", " + yearString);
-        String res = CalculateAge(dateOfBirth, monthString, yearString);
-        System.out.print(res);
+
+        String result = calculateAge(day, month, year);
+        System.out.println(result);
     }
 }
